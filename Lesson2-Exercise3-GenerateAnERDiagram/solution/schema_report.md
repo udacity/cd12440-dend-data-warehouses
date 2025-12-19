@@ -1,0 +1,106 @@
+# Schema Design Report
+
+_Generated: 2025-12-15T18:49:45.641848Z_
+
+## Schema Diagram (Mermaid)
+
+```mermaid
+erDiagram
+    dw_dim_date {
+        INTEGER date_key
+        DATE date_actual
+        SMALLINT year
+        SMALLINT quarter
+        SMALLINT month
+        SMALLINT day
+        SMALLINT day_of_week
+        BOOLEAN is_weekend
+    }
+
+    dw_dim_fare_class {
+        BIGINT fare_class_sk
+        VARCHAR(32) fare_class
+    }
+
+    dw_dim_mode {
+        BIGINT mode_sk
+        VARCHAR(32) mode
+    }
+
+    dw_dim_payment_method {
+        BIGINT payment_method_sk
+        VARCHAR(32) payment_method
+    }
+
+    dw_dim_rider {
+        BIGINT rider_sk
+        VARCHAR(32) rider_id
+        VARCHAR(16) rider_segment
+        TIMESTAMP effective_from
+        TIMESTAMP effective_to
+        BOOLEAN is_current
+    }
+
+    dw_dim_route {
+        BIGINT route_sk
+        VARCHAR(32) route_id
+    }
+
+    dw_dim_station {
+        BIGINT station_sk
+        VARCHAR(32) station_id
+        VARCHAR(64) city
+        VARCHAR(32) province
+        DECIMAL(10 latitude
+        DECIMAL(10 longitude
+    }
+
+    dw_fact_trips {
+        BIGINT trip_sk
+        VARCHAR(32) trip_id
+        BIGINT rider_sk
+        BIGINT route_sk
+        BIGINT mode_sk
+        BIGINT origin_station_sk
+        BIGINT destination_station_sk
+        INTEGER board_date_key
+        INTEGER alight_date_key
+        INTEGER transfers
+        INTEGER zones_charged
+        DECIMAL(10 distance_km
+        DECIMAL(12 total_fare_cad
+        BIGINT payment_method_sk
+        BIGINT fare_class_sk
+        BOOLEAN on_time_arrival
+        BOOLEAN service_disruption
+    }
+
+    dw_dim_rider ||--o{ dw_fact_trips : "rider_sk"
+    dw_dim_route ||--o{ dw_fact_trips : "route_sk"
+    dw_dim_mode ||--o{ dw_fact_trips : "mode_sk"
+    dw_dim_payment_method ||--o{ dw_fact_trips : "payment_method_sk"
+    dw_dim_fare_class ||--o{ dw_fact_trips : "fare_class_sk"
+```
+
+## Tables Summary
+
+| schema | table | columns |
+| --- | --- | --- |
+| public | dw_dim_date | 8 |
+| public | dw_dim_fare_class | 2 |
+| public | dw_dim_mode | 2 |
+| public | dw_dim_payment_method | 2 |
+| public | dw_dim_rider | 6 |
+| public | dw_dim_route | 2 |
+| public | dw_dim_station | 6 |
+| public | dw_fact_trips | 17 |
+
+## Relationships
+
+| dimension | fact | fk_column |
+| --- | --- | --- |
+| dw_dim_rider | dw_fact_trips | rider_sk |
+| dw_dim_route | dw_fact_trips | route_sk |
+| dw_dim_mode | dw_fact_trips | mode_sk |
+| dw_dim_payment_method | dw_fact_trips | payment_method_sk |
+| dw_dim_fare_class | dw_fact_trips | fare_class_sk |
